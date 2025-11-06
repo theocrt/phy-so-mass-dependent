@@ -7,3 +7,5 @@ data/__pycache__/load_data.cpython-311.pyc
 *.pkl
 *.png
 *.log
+*.models
+results/*

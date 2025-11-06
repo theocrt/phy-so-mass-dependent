@@ -61,7 +61,7 @@ def mass_dependent(model_name,base_path = DATA_PATH):
     
     # Read age
     age = pd.read_csv(base_path + model_name + "/age.dat",
-                      sep=r"\s+", header=None).to_numpy().flatten()  # shape (N_rows,)
+                      sep=r"\s+", header=None).to_numpy().flatten() / 1e3  # shape (N_rows,)
 
     
     return {"name": model_name,
@@ -88,7 +88,7 @@ def remove_nan(model,var_name = "s_phi_m", remove_massive = False):
     var = model[var_name]
     m = model["m"]
     age = model["age"]
-    ds = {"name":model["name"],"age":[],var_name:[], "m":[]}
+    ds = {"name":model["name"],"age":[],"x":[],var_name:[], "m":[]}
 
     for i in range(var.shape[0]):
         mask = np.isnan(var[i])
@@ -106,6 +106,8 @@ def remove_nan(model,var_name = "s_phi_m", remove_massive = False):
             ds[var_name].append(tmp_var)
             ds["age"].append(age_tmp)
             ds["m"].append(tmp_m.reshape(1,len(tmp_m)))
+            age_array = np.ones_like(tmp_m)*age_tmp
+            ds["x"].append([tmp_m,age_array])
 
     return ds
 
@@ -132,9 +134,11 @@ def select_multiple_timesteps(ds,n=10,q=2):
     indices = np.random.choice(size=n,a=range(len(ds["age"])),replace = False)
     for idx in indices:
         assert len(ds["m"][idx].T) == len(ds[var_name][idx])
-        ds_new["age"].append(ds["age"][idx])
+        tmp_age = ds["age"][idx]
+        ds_new["age"].append(tmp_age)
         tmp_m = ds["m"][idx][0,::q]
         ds_new["m"].append(tmp_m.reshape((1,len(tmp_m))))
         ds_new[var_name].append(ds[var_name][idx][::q])
+        ds_new["x"].append([tmp_m, np.ones_like(tmp_m)*tmp_age])
 
     return ds_new
