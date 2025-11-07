@@ -101,9 +101,7 @@ def run_sr_analysis(s_phi_multiple, i):
                                 # Number of iterations
                                 epochs = 1,
                                 n_cpus=n_cpus)
-    
-    np.savetxt(f"results/x_{i}.dat",s_phi_multiple["x"])
-    np.savetxt(f"results/x_{i}.dat",s_phi_multiple["s_phi_m"])
+
     return expression, logs
 
 for i in range(1):
