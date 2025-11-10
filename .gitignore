@@ -8,4 +8,4 @@ data/__pycache__/load_data.cpython-311.pyc
 *.png
 *.log
 *.models
-results/*
+
